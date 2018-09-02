@@ -8,9 +8,21 @@ import {
   StyleSheet,
   TextInput
 } from "react-native";
+import store from "./../redux/store";
+import { connect } from "react-redux";
+import { loginUser , registerUser} from "./../redux/actions";
 
 class WelcomeScreen extends React.Component {
   state = {
+    username: "dahsh",
+    password: "killmemore",
+    token: "",
+    message: "",
+    password1:'',
+    password2:'',
+    isAuthenticated: false,
+    signinActive: false,
+    registerActive: false,
     fadein: new Animated.Value(0),
     fadebot: new Animated.Value(-30),
     loginFade: new Animated.Value(-300),
@@ -39,33 +51,61 @@ class WelcomeScreen extends React.Component {
       ])
     ]).start();
   }
+
+  componentWillUpdate() {
+    if (store.getState().userLogin.isAuthenticated) {
+      this.props.navigation.navigate("Main", {
+        creator: this.state.username
+      });
+    }
+  }
+
   signinClicked = () => {
     Animated.sequence([
-      Animated.timing(this.state.registerFade, {
-        toValue: -300,
-        duration: 200
-      }),
+      Animated.parallel([
+        Animated.timing(this.state.registerFade, {
+          toValue: -300,
+          duration: 200
+        }),
+        Animated.timing(this.state.fadebot, {
+          toValue: 150,
+          duration: 200
+        })
+      ]),
+
       Animated.timing(this.state.loginFade, {
         toValue: 40,
-        duration: 1000
+        duration: 500
       })
     ]).start();
+    if (this.state.signinActive) {
+      this.props.login(this.state.username, this.state.password);
+    }
+    this.setState({ signinActive: true, registerActive: false });
   };
   signupClicked = () => {
     Animated.sequence([
-      Animated.timing(this.state.loginFade, {
-        toValue: -300,
-        duration: 200
-      }),
+      Animated.parallel([
+        Animated.timing(this.state.loginFade, {
+          toValue: -300,
+          duration: 200
+        }),
+        Animated.timing(this.state.fadebot, {
+          toValue: 150,
+          duration: 200
+        })
+      ]),
       Animated.timing(this.state.registerFade, {
         toValue: 40,
-        duration: 1000
+        duration: 500
       })
     ]).start();
+    if (this.state.registerActive) {
+      this.props.register(this.state.username, this.state.password1);
+    }
+    this.setState({ signinActive: false, registerActive: true });
   };
-  handleSignin = () => {
-    this.props.navigation.navigate("Main");
-  };
+
   render() {
     let { fadein, fadebot, loginFade, registerFade } = this.state;
     return (
@@ -87,7 +127,7 @@ class WelcomeScreen extends React.Component {
             style={{
               backgroundColor: "transparent",
               borderColor: "white",
-              borderWidth: StyleSheet.hairlineWidth,
+              borderWidth: 1,
               borderRadius: 20,
               height: 50,
               justifyContent: "center",
@@ -96,14 +136,16 @@ class WelcomeScreen extends React.Component {
             }}
             onPress={this.signinClicked}
           >
-            <Text style={{ color: "white", fontSize: 26 }}>Sign In</Text>
+            <Text style={{ color: "white", fontSize: 26 }}>
+              {this.state.signinActive ? "Next" : "Sign In"}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.signupClicked}
             style={{
               backgroundColor: "transparent",
               borderColor: "white",
-              borderWidth: StyleSheet.hairlineWidth,
+              borderWidth: 1,
               borderRadius: 20,
               height: 50,
               justifyContent: "center",
@@ -111,7 +153,9 @@ class WelcomeScreen extends React.Component {
               marginBottom: 8
             }}
           >
-            <Text style={{ color: "white", fontSize: 26 }}>Sign Up</Text>
+            <Text style={{ color: "white", fontSize: 26 }}>
+              {this.state.registerActive ? "Next" : "Sign Up"}
+            </Text>
           </TouchableOpacity>
 
           <Text
@@ -134,25 +178,35 @@ class WelcomeScreen extends React.Component {
             style={{
               borderColor: "white",
               borderRadius: 20,
-              borderWidth: StyleSheet.hairlineWidth,
-              marginBottom: 8
+              borderWidth: 1,
+              marginBottom: 8,
+              height: 40,
+              color: "white",
+              paddingHorizontal: 15,
+              fontSize: 16
             }}
             placeholder="Username"
+            value={this.state.username}
+            onChangeText={username => this.setState({ username })}
             underlineColorAndroid="transparent"
           />
           <TextInput
             style={{
               borderColor: "white",
               borderRadius: 20,
-              borderWidth: StyleSheet.hairlineWidth,
-              marginBottom: 8
+              borderWidth: 1,
+              marginBottom: 8,
+              height: 40,
+              color: "white",
+              paddingHorizontal: 15,
+              fontSize: 16
             }}
+            secureTextEntry={true}
             placeholder="Password"
+            value={this.state.password}
+            onChangeText={password => this.setState({ password })}
             underlineColorAndroid="transparent"
           />
-          <TouchableOpacity onPress={this.handleSignin}>
-            <Text>Next</Text>
-          </TouchableOpacity>
         </Animated.View>
         <Animated.View
           style={{
@@ -166,39 +220,71 @@ class WelcomeScreen extends React.Component {
             style={{
               borderColor: "white",
               borderRadius: 20,
-              borderWidth: StyleSheet.hairlineWidth,
-              marginBottom: 8
+              borderWidth: 1,
+              marginBottom: 8,
+              height: 40,
+              color: "white",
+              paddingHorizontal: 15,
+              fontSize: 16
             }}
             placeholder="Username"
+            value={this.state.username}
+            onChangeText={username => this.setState({ username })}
             underlineColorAndroid="transparent"
           />
           <TextInput
             style={{
               borderColor: "white",
               borderRadius: 20,
-              borderWidth: StyleSheet.hairlineWidth,
-              marginBottom: 8
+              borderWidth: 1,
+              marginBottom: 8,
+              height: 40,
+              color: "white",
+              paddingHorizontal: 15,
+              fontSize: 16
             }}
+            secureTextEntry={true}
             placeholder="Password"
+            value={this.state.password}
+            onChangeText={password1 => this.setState({ password1 })}
             underlineColorAndroid="transparent"
           />
           <TextInput
             style={{
               borderColor: "white",
               borderRadius: 20,
-              borderWidth: StyleSheet.hairlineWidth,
-              marginBottom: 8
+              borderWidth: 1,
+              marginBottom: 8,
+              height: 40,
+              color: "white",
+              paddingHorizontal: 15,
+              fontSize: 16
             }}
+            secureTextEntry={true}
             placeholder="Password"
+            value={this.state.password}
+          onChangeText={password1 => this.setState({ password2 })}
             underlineColorAndroid="transparent"
           />
-          <TouchableOpacity onPress={this.handleSignin}>
-            <Text>Next</Text>
-          </TouchableOpacity>
         </Animated.View>
       </ImageBackground>
     );
   }
 }
 
-export default WelcomeScreen;
+const mapStateToProps = state => ({
+  username: state.userLogin.username,
+  //token: state.userLogin.token,
+  message: state.userLogin.message,
+  isAuthenticated: state.userLogin.isAuthenticated
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: (username, password) => dispatch(loginUser(username, password)),
+  register: (username, password) => dispatch(registerUser(username, password))
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WelcomeScreen);
+  

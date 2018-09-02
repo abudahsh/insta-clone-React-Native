@@ -90,7 +90,7 @@ const MainTabs = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: "Search",
+    initialRouteName: "Feed",
     tabBarOptions: {
       activeTintColor: "#6200EE",
       inactiveTintColor: "#858585",

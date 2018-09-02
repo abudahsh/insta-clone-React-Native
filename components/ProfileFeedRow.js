@@ -5,24 +5,17 @@ picWidth = Dimensions.get("window").width / 3;
 imageWidth = picWidth - 2;
 
 const ProfileFeedRow = props => {
-  if (props.photos) {
+  
     return (
       <TouchableOpacity>
         <Image
           style={{ height: picWidth, width: imageWidth }}
-          source={{ uri: props.photos[2] }}
+          source={{ uri: props.media }}
         />
       </TouchableOpacity>
     );
-  }
-  return (
-    <TouchableOpacity>
-      <Image
-        style={{ height: picWidth, width: imageWidth }}
-        source={require("./../assets/bg1.jpg")}
-      />
-    </TouchableOpacity>
-  );
+  
+  
 };
 
 export default ProfileFeedRow;

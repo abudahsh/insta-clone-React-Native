@@ -1,38 +1,24 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image, FlatList } from "react-native";
+import { View, Text, StyleSheet, Image, FlatList, ScrollView } from "react-native";
+import { connect } from "react-redux";
 import FeedRow from "./../components/FeedRow";
-import { ScrollView } from "../node_modules/react-native-gesture-handler";
-import config from "./../baseconfig";
-import * as firebase from "firebase";
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
-feedData = [
-  { id: "1" },
-  { id: "2" },
-  { id: "3" },
-  { id: "4" },
-  { id: "5" },
-  { id: "6" }
-];
+import { fetchTweets } from "./../redux/actions";
+import store from "./../redux/store";
+
+
+
 class FeedScreen extends Component {
   state = {
     items: []
   };
   _keyExtractor = (item, index) => item.id;
   _renderItem = (item, index) => <FeedRow {...item} />;
-  itemsRef = firebase.database().ref("photos");
   componentDidMount() {
-    this.itemsRef.on("value", snapshot => {
-      let data = snapshot.val();
-      let items = Object.values(data);
-      this.setState({ items });
-      console.log(this.state.items);
-    });
+    this.props.getTweets(this.props.token);
   }
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} alwaysBounceVertical={true} refreshing={true}>
         <View
           style={{
             flexDirection: "row",
@@ -43,33 +29,83 @@ class FeedScreen extends Component {
             marginTop: 4
           }}
         >
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            source={require("./../assets/bg2.jpg")}
-          />
+          <ScrollView horizontal={true}>
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                marginRight: 7
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+          </ScrollView>
         </View>
         <FlatList
-          data={this.state.items}
+          data={this.props.tweets}
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
         />
@@ -78,7 +114,24 @@ class FeedScreen extends Component {
   }
 }
 
-export default FeedScreen;
+
+const mapStateToProps = state => ({
+  username: state.userLogin.username,
+  token: state.userLogin.token,
+  nickName: state.userLogin.nickName,
+  profilePic: state.userLogin.profilePic,
+  tweets: state.tweetFetch.tweets,
+  isLoading: state.tweetFetch.isLoading
+});
+
+const mapDispatchToProps = dispatch => ({
+  getTweets: token => dispatch(fetchTweets())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FeedScreen);
 
 const styles = StyleSheet.create({
   container: {

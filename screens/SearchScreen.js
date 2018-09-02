@@ -8,40 +8,11 @@ import {
   FlatList,
   ScrollView
 } from "react-native";
+import { connect } from "react-redux";
+import { fetchTweets } from "./../redux/actions";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ProfileFeedRow from "./../components/ProfileFeedRow";
 
-fakePics = [
-  { id: "1" },
-  { id: "2" },
-  { id: "3" },
-  { id: "4" },
-  { id: "5" },
-  { id: "6" },
-  { id: "7" },
-  { id: "8" },
-  { id: "9" },
-  { id: "10" },
-  { id: "11" },
-  { id: "12" },
-  { id: "27" },
-  { id: "28" },
-  { id: "26" },
-  { id: "37" },
-  { id: "38" },
-  { id: "46" },
-  { id: "47" },
-  { id: "48" },
-  { id: "36" },
-  { id: "57" },
-  { id: "58" },
-  { id: "56" },
-  { id: "57" },
-  { id: "68" },
-  { id: "66" },
-  { id: "76" },
-  { id: "85" }
-];
 const formatData = (data, numColumns) => {
   const numOfFullRows = Math.floor(data.length / numColumns);
   let numberOfElementsInLastRow = data.length - numOfFullRows * numColumns;
@@ -56,6 +27,14 @@ const formatData = (data, numColumns) => {
 };
 
 class SearchScreen extends Component {
+   state = {
+    tweets: []
+  };
+  _keyExtractor = (item, index) => item.id;
+  _renderItem = (item, index) => <FeedRow {...item} />;
+  componentDidMount() {
+    this.props.getTweets(this.props.token);
+  }
   render() {
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -90,26 +69,102 @@ class SearchScreen extends Component {
             marginTop: 4
           }}
         >
-          <Image
-            style={{ width: 100, height: 50, borderRadius: 7 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 100, height: 50, borderRadius: 7 }}
-            source={require("./../assets/bg2.jpg")}
-          />
+          <ScrollView horizontal={true}>
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
 
-          <Image
-            style={{ width: 100, height: 50, borderRadius: 7 }}
-            source={require("./../assets/bg2.jpg")}
-          />
-          <Image
-            style={{ width: 100, height: 50, borderRadius: 7 }}
-            source={require("./../assets/bg2.jpg")}
-          />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+            <Image
+              style={{
+                width: 100,
+                height: 50,
+                borderRadius: 7,
+                marginRight: 10
+              }}
+              source={require("./../assets/bg2.jpg")}
+            />
+          </ScrollView>
         </View>
         <FlatList
-          data={fakePics}
+          data={formatData(this.props.tweets, 3)}
           renderItem={({ item }) => {
             if (item.empty == true) {
               return (
@@ -135,7 +190,25 @@ class SearchScreen extends Component {
   }
 }
 
-export default SearchScreen;
+
+const mapStateToProps = state => ({
+  username: state.userLogin.username,
+  token: state.userLogin.token,
+  nickName: state.userLogin.nickName,
+  profilePic: state.userLogin.profilePic,
+  tweets: state.tweetFetch.tweets,
+  isLoading: state.tweetFetch.isLoading
+});
+
+const mapDispatchToProps = dispatch => ({
+  getTweets: token => dispatch(fetchTweets())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchScreen);
+
 
 const styles = StyleSheet.create({
   container: {

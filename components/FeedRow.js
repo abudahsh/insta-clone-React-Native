@@ -19,15 +19,16 @@ class FeedRow extends React.Component {
               width: 30,
               borderRadius: 15
             }}
-            source={require("./../assets/bg2.jpg")}
+            source={{ uri: this.props.item.profile_pic }}
           />
 
-          <Text style={{ paddingLeft: 8 }}>Reserved</Text>
+          <Text style={{ paddingLeft: 8 }}>{this.props.item.nick_name}</Text>
         </TouchableOpacity>
         <Image
           style={{ width: "100%", height: 400 }}
-          source={{ uri: this.props.item }}
+          source={{ uri: this.props.item.media }}
         />
+        <Text>{this.props.item.body}</Text>
         <PostActionBar />
       </View>
     );
