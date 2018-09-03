@@ -14,8 +14,8 @@ import { loginUser , registerUser} from "./../redux/actions";
 
 class WelcomeScreen extends React.Component {
   state = {
-    username: "dahsh",
-    password: "killmemore",
+    username: "",
+    password: "",
     token: "",
     message: "",
     password1:'',
@@ -68,7 +68,7 @@ class WelcomeScreen extends React.Component {
           duration: 200
         }),
         Animated.timing(this.state.fadebot, {
-          toValue: 150,
+          toValue: 70,
           duration: 200
         })
       ]),
@@ -91,7 +91,7 @@ class WelcomeScreen extends React.Component {
           duration: 200
         }),
         Animated.timing(this.state.fadebot, {
-          toValue: 150,
+          toValue: 70,
           duration: 200
         })
       ]),
@@ -113,6 +113,7 @@ class WelcomeScreen extends React.Component {
         style={{ flex: 1 }}
         source={require("./../assets/giphy1.gif")}
       >
+      <Text style={{color:'white', paddingTop:30}}>{this.props.message}</Text>
         <Animated.View
           style={{
             position: "absolute",
@@ -245,7 +246,7 @@ class WelcomeScreen extends React.Component {
             }}
             secureTextEntry={true}
             placeholder="Password"
-            value={this.state.password}
+            value={this.state.password1}
             onChangeText={password1 => this.setState({ password1 })}
             underlineColorAndroid="transparent"
           />
@@ -262,7 +263,7 @@ class WelcomeScreen extends React.Component {
             }}
             secureTextEntry={true}
             placeholder="Password"
-            value={this.state.password}
+            value={this.state.password2}
           onChangeText={password1 => this.setState({ password2 })}
             underlineColorAndroid="transparent"
           />

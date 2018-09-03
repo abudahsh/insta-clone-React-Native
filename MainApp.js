@@ -107,7 +107,7 @@ export default class MainApp extends Component {
   render() {
     return (
       <Swiper loop={false} showsPagination={false} index={1}>
-        <View style={styles.container} />
+        <CameraScreen />
         <MainTabs />
         <View style={styles.container}>
           <Text>Profile</Text>

@@ -11,11 +11,9 @@ import {
 import ProfileInfoTop from "./../components/ProfileInfoTop";
 import ProfileFeedRow from "./../components/ProfileFeedRow";
 import Icon from "react-native-vector-icons/FontAwesome";
-import config from "./../baseconfig";
-import * as firebase from "firebase";
-if (!firebase.apps.length) {
-  firebase.initializeApp(config);
-}
+import store from './../redux/store'
+import { connect } from "react-redux";
+import { fetchTweets } from "./../redux/actions";
 
 fakeData = [
   { id: "1" },
@@ -39,22 +37,17 @@ const formatData = (data, numColumns) => {
   }
   return data;
 };
-export default class ProfileScreen extends Component {
-  state = { items: [] };
+ class ProfileScreen extends Component {
+  state = { tweets: [] };
 
   static navigationOptions = {
     headerLeft: <View style={{ flexDirection: "row" }} />,
     headerRight: () => null
   };
-  itemsRef = firebase.database().ref("users");
-  componentDidMount() {
-    this.itemsRef.on("value", snapshot => {
-      let data = snapshot.val();
-      let items = Object.values(data);
-      this.setState({ items });
-      console.log(this.state.items[0].photos[1]);
-    });
+ componentDidMount() {
+    this.props.getTweets(this.props.token);
   }
+ 
   render() {
     return (
       <ScrollView style={styles.container}>
@@ -68,7 +61,7 @@ export default class ProfileScreen extends Component {
         </View>
 
         <FlatList
-          data={this.state.items}
+          data={this.props.tweets}
           renderItem={({ item }) => {
             if (item.empty == true) {
               return (
@@ -93,6 +86,26 @@ export default class ProfileScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  username: state.userLogin.username,
+  token: state.userLogin.token,
+  nickName: state.userLogin.nickName,
+  profilePic: state.userLogin.profilePic,
+  tweets: state.tweetFetch.tweets,
+  isLoading: state.tweetFetch.isLoading
+});
+
+const mapDispatchToProps = dispatch => ({
+  getTweets: token => dispatch(fetchTweets())
+});
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProfileScreen);
+
 
 const styles = StyleSheet.create({
   container: {
